@@ -34,7 +34,7 @@ data class User(
     var email: String? = null,
 
     @Column(name = "authority", nullable = false)
-    var authority: String? = null,
+    var authority: String? = UserAuthority.COMMON.name,
 
     @Column(name = "non_expired", nullable = false)
     var nonExpired: Boolean? = true,
