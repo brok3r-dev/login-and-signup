@@ -18,6 +18,6 @@ class UserController {
         @RequestBody request: UserRequest
     ): ResponseEntity<Any> {
         //TODO: create register service
-        return ResponseEntity.ok("")
+        return ResponseEntity.ok("In Progress")
     }
 }
