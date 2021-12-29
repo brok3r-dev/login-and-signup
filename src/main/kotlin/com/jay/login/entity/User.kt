@@ -1,5 +1,6 @@
 package com.jay.login.entity
 
+import com.jay.login.common.UserAuthority
 import com.jay.login.common.emailValidation
 import com.jay.login.common.idAndNameValidation
 import com.jay.login.common.passwordValidation
@@ -29,7 +30,7 @@ data class User(
     @Column(name = "name", nullable = false)
     var name: String? = null,
 
-    @Column(name = "email", nullable = true)
+    @Column(name = "email", nullable = true, unique = true)
     var email: String? = null,
 
     @Column(name = "authority", nullable = false)
@@ -85,7 +86,9 @@ data class User(
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        TODO("Not yet implemented")
+        this.authority?.let {
+            return UserAuthority.valueOf(it).auth
+        } ?: throw Exception("Invalid Authority")
     }
 
     override fun getPassword(): String = this.userPassword ?: throw Exception("Invalid Password")
