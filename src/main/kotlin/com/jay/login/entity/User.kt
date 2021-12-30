@@ -1,6 +1,10 @@
 package com.jay.login.entity
 
+import com.jay.login.common.UserAuthority
 import com.jay.login.common.emailValidation
+import com.jay.login.common.handler.UserErrorCode
+import com.jay.login.common.handler.UserErrorResponse
+import com.jay.login.common.handler.UserException
 import com.jay.login.common.idAndNameValidation
 import com.jay.login.common.passwordValidation
 import com.jay.login.model.request.UserRequest
@@ -29,11 +33,11 @@ data class User(
     @Column(name = "name", nullable = false)
     var name: String? = null,
 
-    @Column(name = "email", nullable = true)
+    @Column(name = "email", nullable = true, unique = true)
     var email: String? = null,
 
     @Column(name = "authority", nullable = false)
-    var authority: String? = "GENERAL",
+    var authority: String? = UserAuthority.COMMON.name,
 
     @Column(name = "non_expired", nullable = false)
     var nonExpired: Boolean? = true,
@@ -57,26 +61,30 @@ data class User(
         if (idAndNameValidation(request.id)) {
             this.id = request.id
         } else {
-            //TODO: validationError
+            val response = UserErrorResponse(UserErrorCode.INVALID_ID_FORMAT)
+            throw UserException(response)
         }
 
         if (passwordValidation(request.password)) {
             this.userPassword = request.password
         } else {
-            //TODO: validationError
+            val response = UserErrorResponse(UserErrorCode.INVALID_PASSWORD_FORMAT)
+            throw UserException(response)
         }
 
         if (idAndNameValidation(request.id)) {
             this.name = request.name
         } else {
-            //TODO: validationError
+            val response = UserErrorResponse(UserErrorCode.INVALID_NAME_FORMAT)
+            throw UserException(response)
         }
 
         request.email?.let { email ->
             if (emailValidation(email)) {
                 this.email = email
             } else {
-                //TODO: validationError
+                val response = UserErrorResponse(UserErrorCode.INVALID_EMAIL_FORMAT)
+                throw UserException(response)
             }
         }
 
@@ -85,7 +93,12 @@ data class User(
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        TODO("Not yet implemented")
+        this.authority?.let {
+            return UserAuthority.valueOf(it).auth
+        } ?: run {
+            val response = UserErrorResponse(UserErrorCode.INVALID_AUTHORITY)
+            throw UserException(response)
+        }
     }
 
     override fun getPassword(): String = this.userPassword ?: throw Exception("Invalid Password")
