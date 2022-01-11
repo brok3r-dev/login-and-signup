@@ -9,11 +9,13 @@ import com.jay.login.model.response.UserResponse
 import com.jay.login.repository.UserRepository
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val encoder: BCryptPasswordEncoder
 ): UserDetailsService {
     fun register(request: UserRequest): UserResponse {
         if (userRepository.findById(request.id)?.isNotEmpty() == true) {
@@ -21,8 +23,9 @@ class UserService(
             throw UserException(response)
         }
 
-        val user = userRepository.save(User(request))
-        return UserResponse(user)
+        val user = User(request)
+        user.userPassword = encoder.encode(request.password)
+        return UserResponse(userRepository.save(user))
     }
 
     override fun loadUserByUsername(username: String): UserDetails {
