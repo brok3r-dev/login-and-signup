@@ -9,6 +9,7 @@ import com.jay.login.common.idAndNameValidation
 import com.jay.login.common.passwordValidation
 import com.jay.login.model.request.UserRequest
 import lombok.NoArgsConstructor
+import org.hibernate.Hibernate
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.io.Serializable
@@ -37,7 +38,7 @@ data class User(
     var email: String? = null,
 
     @Column(name = "authority", nullable = false)
-    var authority: String? = UserAuthority.COMMON.name,
+    var authority: String? = UserAuthority.ROLE_VIEWER.name,
 
     @Column(name = "non_expired", nullable = false)
     var nonExpired: Boolean? = true,
@@ -112,4 +113,12 @@ data class User(
     override fun isCredentialsNonExpired(): Boolean = this.credentialNonExpired ?: false
 
     override fun isEnabled(): Boolean = this.enabled ?: false
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+        other as User
+
+        return id != null && id == other.id
+    }
 }

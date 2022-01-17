@@ -4,19 +4,19 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 enum class UserAuthority(val auth: MutableCollection<out GrantedAuthority>) {
-    MASTER(
+    ROLE_MASTER(
         mutableListOf(
             SimpleGrantedAuthority("master:read"),
             SimpleGrantedAuthority("master:write")
         )
     ),
-    MANAGER(
+    ROLE_MANAGER(
         mutableListOf(
             SimpleGrantedAuthority("manager:read"),
             SimpleGrantedAuthority("manager:write")
         )
     ),
-    COMMON(
+    ROLE_VIEWER(
         mutableListOf(
             SimpleGrantedAuthority("common:read"),
             SimpleGrantedAuthority("common:write")

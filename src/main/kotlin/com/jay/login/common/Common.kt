@@ -2,8 +2,6 @@ package com.jay.login.common
 
 import java.util.regex.Pattern
 
-const val API_VERSION: String = "v1"
-
 const val ID_NAME_PATTERN: String = "^[A-Za-z0-9]{3,20}$"
 fun idAndNameValidation(name: String) = Pattern.compile(ID_NAME_PATTERN).matcher(name).matches()
 

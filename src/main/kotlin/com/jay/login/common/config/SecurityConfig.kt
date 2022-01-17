@@ -2,7 +2,8 @@ package com.jay.login.common.config
 
 import com.jay.login.service.UserService
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -11,42 +12,53 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.JdbcUserDetailsManager
+import javax.sql.DataSource
 
-@Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
+    private val dataSource: DataSource,
     private val userService: UserService
 ) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?){
-        if (http == null) { throw Exception() }
+        if (http == null) { throw Exception("HTTP Configure Failed") }
 
-        http.csrf().disable()
+        http
+            .csrf()
+                .disable()
             .authorizeRequests()
-                .antMatchers("/", "/home")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .and()
             .formLogin()
                 .loginPage("/login")
+                .defaultSuccessUrl("/home", true)
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .permitAll()
                 .and()
             .logout()
                 .permitAll()
+                .and()
+            .authorizeRequests()
+                .anyRequest()
+                .authenticated()
     }
 
     override fun configure(auth: AuthenticationManagerBuilder?) {
         auth?.let {
-            auth.userDetailsService(userService)
-        } ?: super.configure(auth)
+            val provider = DaoAuthenticationProvider().apply {
+                setPasswordEncoder(encoder())
+                setUserDetailsService(userService)
+            }
+
+            it.authenticationProvider(provider)
+        } ?: throw Exception("AuthenticationManagerBuilder Configure Failed")
     }
 
     @Bean
     override fun userDetailsService(): UserDetailsService {
-        return super.userDetailsService()
+        return JdbcUserDetailsManager(dataSource)
     }
 
     @Bean
