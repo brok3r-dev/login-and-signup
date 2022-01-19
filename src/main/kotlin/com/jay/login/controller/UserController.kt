@@ -9,12 +9,12 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping(name = "/user")
+@RequestMapping("/user")
 class UserController(
     private val encoder: PasswordEncoder,
     private val userService: UserService
 ) {
-    @PostMapping(name = "/register")
+    @PostMapping("/register")
     @ResponseBody
     fun register(
         @RequestBody @Validated request: UserRequest
