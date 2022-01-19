@@ -1,6 +1,6 @@
 package com.jay.login.common.config
 
-import com.jay.login.service.UserService
+import com.jay.login.service.DetailsService
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
@@ -19,7 +19,7 @@ import javax.sql.DataSource
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val dataSource: DataSource,
-    private val userService: UserService
+    private val userService: DetailsService
 ) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?){
         if (http == null) { throw Exception("HTTP Configure Failed") }

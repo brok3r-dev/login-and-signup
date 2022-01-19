@@ -8,8 +8,6 @@ import com.jay.login.common.handler.UserException
 import com.jay.login.common.idAndNameValidation
 import com.jay.login.common.passwordValidation
 import com.jay.login.model.request.UserRequest
-import lombok.NoArgsConstructor
-import org.hibernate.Hibernate
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.io.Serializable
@@ -22,8 +20,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "user")
-@NoArgsConstructor
-data class User(
+class User(
     @Id
     @Column(name = "id", nullable = false, unique = true)
     var id: String? = null,
@@ -59,36 +56,10 @@ data class User(
     var modifiedAt: Date? = null
 ) : Serializable, UserDetails {
     constructor(request: UserRequest) : this() {
-        if (idAndNameValidation(request.id)) {
-            this.id = request.id
-        } else {
-            val response = UserErrorResponse(UserErrorCode.INVALID_ID_FORMAT)
-            throw UserException(response)
-        }
-
-        if (passwordValidation(request.password)) {
-            this.userPassword = request.password
-        } else {
-            val response = UserErrorResponse(UserErrorCode.INVALID_PASSWORD_FORMAT)
-            throw UserException(response)
-        }
-
-        if (idAndNameValidation(request.id)) {
-            this.name = request.name
-        } else {
-            val response = UserErrorResponse(UserErrorCode.INVALID_NAME_FORMAT)
-            throw UserException(response)
-        }
-
-        request.email?.let { email ->
-            if (emailValidation(email)) {
-                this.email = email
-            } else {
-                val response = UserErrorResponse(UserErrorCode.INVALID_EMAIL_FORMAT)
-                throw UserException(response)
-            }
-        }
-
+        this.id = request.id
+        this.userPassword = request.password
+        this.name = request.name
+        this.email = request.email
         this.createdAt = Date.valueOf(LocalDate.now())
         this.modifiedAt = Date.valueOf(LocalDate.now())
     }
@@ -113,12 +84,4 @@ data class User(
     override fun isCredentialsNonExpired(): Boolean = this.credentialNonExpired ?: false
 
     override fun isEnabled(): Boolean = this.enabled ?: false
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as User
-
-        return id != null && id == other.id
-    }
 }
