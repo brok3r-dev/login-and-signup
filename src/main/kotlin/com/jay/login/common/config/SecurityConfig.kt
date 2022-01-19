@@ -29,6 +29,7 @@ class SecurityConfig(
                 .disable()
             .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
+                .antMatchers(HttpMethod.GET, "/register").permitAll()
                 .and()
             .formLogin()
                 .loginPage("/login")
