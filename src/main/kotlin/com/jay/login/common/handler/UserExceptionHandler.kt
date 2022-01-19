@@ -14,4 +14,11 @@ class UserExceptionHandler {
     fun handleUserException(ex: UserException): UserErrorResponse {
         return UserErrorResponse(ex.response.code)
     }
+
+    @ExceptionHandler(Exception::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    fun handleException(ex: Exception): String {
+        return ex.message ?: "INTERNAL_ERROR"
+    }
 }
