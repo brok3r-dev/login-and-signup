@@ -4,15 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .container {
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid silver;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body>
-Home <br>
+<div class="container">
+    <div>
+        <p>Home Page</p>
+    </div>
 
-<form th:action="@{/logout}" method="post">
-    <div><input type="submit" value="Logout"/></div>
-</form>
 
+    <div>
+        <iframe width="420" height="315"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ">
+        </iframe>
+    </div>
+
+    <div>
+        <form th:action="@{/logout}" method="post">
+            <div><input type="submit" value="Logout"/></div>
+        </form>
+    </div>
+</div>
 </body>
 
 </html>

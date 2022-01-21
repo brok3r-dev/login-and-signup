@@ -2,19 +2,52 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>User Register</title>
+    <title>Registration</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .container {
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        div {
+            height: 30px;
+        }
+
+        form {
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/user/register}" method="post">
-    <div><label> ID: <input type="id" name="id"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <div><label> Nickname: <input type="name" name="nickname"/> </label></div>
-    <div><label> Email: <input type="email" name="email"/> </label></div>
-    <div><input type="submit" value="Sign Up"/></div>
-</form>
 
-<form th:action="@{/login}" method="get">
-    <div><input type="submit" value="Back"></div>
-</form>
+<div class="container">
+    <form th:action="@{/user/register}" method="post">
+        <div><label> ID: <input type="id" name="id"/> </label></div>
+        <div><label> Password: <input type="password" name="password"/> </label></div>
+        <div><label> Nickname: <input type="name" name="nickname"/> </label></div>
+        <div><label> Email: <input type="email" name="email"/> </label></div>
+        <div><input type="submit" value="Sign Up"/></div>
+    </form>
+
+    <form th:action="@{/login}" method="get">
+        <div><input type="submit" value="Back"></div>
+    </form>
+</div>
+
 </body>
 </html>
